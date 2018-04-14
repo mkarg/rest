@@ -18,7 +18,9 @@ package javax.ws.rs.ext;
 
 import java.lang.reflect.ReflectPermission;
 import java.net.URL;
+import java.util.function.Function;
 
+import javax.ws.rs.JAXRS;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Link;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -246,4 +248,21 @@ public abstract class RuntimeDelegate {
      * @see javax.ws.rs.core.Link.Builder
      */
     public abstract Link.Builder createLinkBuilder();
+
+    /**
+     * Perform startup of the application in Java SE environments.
+     *
+     * <em>This method is not intended to be invoked by applications. Call
+     * {@link JAXRS#start(Application, Function)} instead.</em>
+     *
+     * @param application
+     *            The application to start up.
+     * @param configurationProvider
+     *            Returns the value of a requested configuration parameter
+     *            identified by the provided key. While the set of actually
+     *            effective keys is product specific, the key constants defined by
+     *            the {@link JAXRS} interface MUST be accepted by compliant
+     *            products.
+     */
+    public abstract void bootstrap(final Application application, final Function<String, Object> configurationProvider);
 }

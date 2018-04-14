@@ -16,10 +16,10 @@
 
 package javax.ws.rs;
 
-import java.net.URI;
-import java.util.ServiceLoader;
+import java.util.function.Function;
 
 import javax.ws.rs.core.Application;
+import javax.ws.rs.ext.RuntimeDelegate;
 
 /**
  * Bootstrap class that is used to startup a JAX-RS application in Java SE
@@ -33,7 +33,7 @@ import javax.ws.rs.core.Application;
  *
  * @since 2.2
  */
-interface JAXRS {
+public interface JAXRS {
 
     /**
      * Invoked in Java SE environments to start the provided application at the
@@ -41,28 +41,46 @@ interface JAXRS {
      *
      * This method will not return until the JAX-RS application is terminated.
      *
-     * @param rootURI
-     *            The root URI to which the application will be bound.
      * @param application
      *            The application to start up.
+     * @param configurationProvider
+     *            Returns the value of a requested configuration parameter
+     *            identified by the provided key. While the set of actually
+     *            effective keys is product specific, the key constants defined by
+     *            the {@link JAXRS} interface MUST be accepted by compliant
+     *            products.
      */
-    static void start(final URI rootURI, final Application application) {
-	ServiceLoader.load(JAXRS.class).iterator().next().bootstrap(rootURI, application);
+    static void start(final Application application, final Function<String, Object> configurationProvider) {
+	RuntimeDelegate.getInstance().bootstrap(application, configurationProvider);
     }
 
     /**
-     * Implemented by JAX-RS products to actually perform startup of the application
-     * in Java SE environments.
-     *
-     * <em>This method is not intended to be invoked by applications. Call
-     * {@link JAXRS#start(URI, Application)} instead.</em>
-     *
-     * @param rootURI
-     *            The root URI to which the application will be bound.
-     * @param application
-     *            The application to start up.
+     * Configuration key for the protocol an application is bound to. A compliant
+     * implementation at least MUST accept the strings {@code "HTTP"} and
+     * {@code "HTTPS"} if these protocols are supported. The default value is
+     * {@code "HTTP"}.
      */
-    default void bootstrap(final URI rootURI, final Application application) {
-	throw new UnsupportedOperationException();
-    }
+    static final String PROTOCOL = "javax.ws.rs.JAXRS.Protocol";
+
+    /**
+     * Configuration key for the hostname or IP address an application is bound to.
+     * If a hostname is provided, the application MUST be bound to <em>all</em> IP
+     * addresses assigned to that hostname. A compliant implementation at least MUST
+     * accept strings bearing hostnames, IP4 address strings, and IP6 address
+     * strings. The default value is {@code "localhost"}.
+     */
+    static final String HOST = "javax.ws.rs.JAXRS.Host";
+
+    /**
+     * Configuration key for the TCP port an application is bound to. A compliant
+     * implementation MUST accept {@code java.lang.Integer} values. The default is
+     * {@code 80}.
+     */
+    static final String PORT = "javax.ws.rs.JAXRS.Port";
+
+    /**
+     * Configuration key for the root path an application is bound to. The default
+     * value is {@code "/"}.
+     */
+    static final String ROOT_PATH = "javax.ws.rs.JAXRS.RootPath";
 }
