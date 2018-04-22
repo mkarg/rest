@@ -18,9 +18,9 @@ package javax.ws.rs.ext;
 
 import java.lang.reflect.ReflectPermission;
 import java.net.URL;
-import java.util.function.Function;
 
 import javax.ws.rs.JAXRS;
+import javax.ws.rs.JAXRS.Instance;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Link;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -250,19 +250,29 @@ public abstract class RuntimeDelegate {
     public abstract Link.Builder createLinkBuilder();
 
     /**
-     * Perform startup of the application in Java SE environments.
+     * Create a new instance of a {@link javax.ws.rs.JAXRS.Configuration.Builder}.
+     * <p>
+     * <em>This method is not intended to be invoked by applications. Call
+     * {@link JAXRS.Configuration.builder()} instead.</em>
+     * </p>
      *
+     * @return new {@code JAXRS.Configuration.Builder} instance.
+     * @see JAXRS.Configuration.Builder
+     */
+    public abstract JAXRS.Configuration.Builder createConfigurationBuilder();
+
+    /**
+     * Perform startup of the application in Java SE environments.
+     * <p>
      * <em>This method is not intended to be invoked by applications. Call
      * {@link JAXRS#start(Application, Function)} instead.</em>
+     * </p>
      *
      * @param application
      *            The application to start up.
-     * @param configurationProvider
-     *            Returns the value of a requested configuration parameter
-     *            identified by the provided key. While the set of actually
-     *            effective keys is product specific, the key constants defined by
-     *            the {@link JAXRS} interface MUST be accepted by compliant
-     *            products.
+     * @param configuration
+     *            The bootstrap configuration.
+     * @return Handle of the running application {@link JAXRS.Instance instance}.
      */
-    public abstract void bootstrap(final Application application, final Function<String, Object> configurationProvider);
+    public abstract Instance bootstrap(Application application, JAXRS.Configuration configuration);
 }

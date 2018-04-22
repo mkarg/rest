@@ -16,8 +16,9 @@
 
 package javax.ws.rs.core;
 
-import java.util.function.Function;
-
+import javax.ws.rs.JAXRS;
+import javax.ws.rs.JAXRS.Configuration;
+import javax.ws.rs.JAXRS.Instance;
 import javax.ws.rs.core.Link.Builder;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Variant.VariantListBuilder;
@@ -56,6 +57,12 @@ public class RuntimeDelegateStub extends RuntimeDelegate {
     }
 
     @Override
-    public void bootstrap(final Application application, final Function<String, Object> configurationProvider) {
+    public Configuration.Builder createConfigurationBuilder() {
+	return null;
+    }
+
+    @Override
+    public Instance bootstrap(final Application application, final JAXRS.Configuration configuration) {
+	return null;
     }
 }
