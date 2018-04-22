@@ -11,7 +11,7 @@
  * version 2 with the GNU Classpath Exception, which is available at
  * https://www.gnu.org/software/classpath/license.html.
  *
- * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+ * SPDX-License-Identifier:z EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
 package javax.ws.rs.core;
@@ -132,7 +132,8 @@ import java.util.Map;
  * config.register(ClientLoggingFilter.class,
  *                 ClientResponseFilter.class);  // Rejected by runtime.
  * </pre>
- *
+ * 
+ * @param <C> generic configurable Java type
  * @author Marek Potociar
  * @since 2.0
  */
