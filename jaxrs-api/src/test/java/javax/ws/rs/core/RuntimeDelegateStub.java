@@ -16,6 +16,8 @@
 
 package javax.ws.rs.core;
 
+import java.util.concurrent.CompletionStage;
+
 import javax.ws.rs.JAXRS;
 import javax.ws.rs.JAXRS.Configuration;
 import javax.ws.rs.JAXRS.Instance;
@@ -62,7 +64,7 @@ public class RuntimeDelegateStub extends RuntimeDelegate {
     }
 
     @Override
-    public Instance bootstrap(final Application application, final JAXRS.Configuration configuration) {
+    public CompletionStage<Instance> bootstrap(final Application application, final JAXRS.Configuration configuration) {
 	return null;
     }
 }
