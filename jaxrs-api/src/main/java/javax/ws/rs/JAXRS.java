@@ -16,6 +16,8 @@
 
 package javax.ws.rs;
 
+import java.util.concurrent.CompletionStage;
+
 import javax.ws.rs.core.Application;
 import javax.ws.rs.ext.RuntimeDelegate;
 
@@ -37,14 +39,30 @@ import javax.ws.rs.ext.RuntimeDelegate;
  * JAXRS.start(new MyApplication(), JAXRS.Configuration.builder().build());
  * </pre>
  * <p>
- * The following example shows how to override defaut values for protocol, host,
- * port and root path:
+ * The following example shows how to override default values for protocol,
+ * host, port and root path:
  * </p>
  *
  * <pre>
  * JAXRS.Configuration config = JAXRS.Configuration.builder().protocol("HTTP").host("0.0.0.0").port(80).rootPath("api")
  * 	.build();
  * JAXRS.start(new MyApplication(), config);
+ * </pre>
+ *
+ * <p>
+ * This more complex example shows how to start multiple applications at the
+ * same time and how to stop them:
+ * </p>
+ *
+ * <pre>
+ * JAXRS.Configuration.Builder configBuilder = JAXRS.Configuration.builder().protocol("HTTP").host("0.0.0.0").port(80);
+ * JAXRS.Configuration firstConfig = configBuilder.rootPath("firstApp").build();
+ * JAXRS.Configuration secondConfig = configBuilder.rootPath("secondApp").build();
+ * CompletionStage&lt;Instance&gt; firstInstance = JAXRS.start(new MyFirstApplication(), firstConfig);
+ * CompletionStage&lt;Instance&gt; secondInstance = JAXRS.start(new MySecondApplication(), secondConfig);
+ * CompletableFuture.allOf(firstInstance, secondInstance).join(); // Wait for start of both
+ * ...
+ * CompletableFuture.allOf(firstInstance.stop(), secondInstance.stop()).join(); // Wait for end of both
  * </pre>
  *
  * @author Markus KARG (markus@headcrashing.eu)
@@ -57,14 +75,14 @@ public interface JAXRS {
      * Invoked in Java SE environments to start the provided application at the
      * specified root URL.
      *
-     * This method will not return until the JAX-RS application is terminated.
-     *
      * @param application
      *            The application to start up.
      * @param configuration
      *            Provides information needed for bootstrapping the application.
+     * @return {@code CompletionStage} asynchronously producing handle of the
+     *         running application {@link JAXRS.Instance instance}.
      */
-    static Instance start(final Application application, final Configuration configuration) {
+    static CompletionStage<Instance> start(final Application application, final Configuration configuration) {
 	return RuntimeDelegate.getInstance().bootstrap(application, configuration);
     }
 
@@ -241,8 +259,11 @@ public interface JAXRS {
 
 	/**
 	 * Shutdown running application instance.
+	 *
+	 * @return {@code CompletionStage} asynchronously shutting down this application
+	 *         instance.
 	 */
-	public void stop();
+	public CompletionStage<Void> stop();
     }
 
 }
