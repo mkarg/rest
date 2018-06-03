@@ -285,6 +285,11 @@
 <!-- Enable ONE of the following to actually run Java SE bootstrap example:
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-simple-http</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
             <artifactId>jersey-container-netty-http</artifactId>
         </dependency>
 
