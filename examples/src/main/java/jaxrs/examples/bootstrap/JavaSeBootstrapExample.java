@@ -21,6 +21,7 @@ import java.util.concurrent.CompletionException;
 
 import javax.ws.rs.JAXRS;
 import javax.ws.rs.JAXRS.Configuration;
+import javax.ws.rs.core.Application;
 
 /**
  * Java SE Bootstrap Example.
@@ -30,13 +31,15 @@ import javax.ws.rs.JAXRS.Configuration;
 public final class JavaSeBootstrapExample {
 
     /**
-     * Starts the example using default properties.
+     * Starts example using default properties, running on HTTPS.
      *
      * @param args
      *            Command line arguments
      */
     public static final void main(final String[] args) {
-        JAXRS.start(new HelloWorld(), JAXRS.Configuration.builder().build()).thenCompose(instance -> {
+        final Application application = new HelloWorld();
+        final JAXRS.Configuration configuration = JAXRS.Configuration.builder().protocol("HTTPS").build();
+        JAXRS.start(application, configuration).thenCompose(instance -> {
             try {
                 final Configuration conf = instance.configuration();
                 System.out.printf("Instance %s running at %s://%s:%d%s [Native handle: %s].%n", instance,
