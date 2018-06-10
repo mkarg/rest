@@ -18,6 +18,7 @@ package javax.ws.rs;
 
 import java.util.concurrent.CompletionStage;
 
+import javax.net.ssl.SSLContext;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.ext.RuntimeDelegate;
 
@@ -116,9 +117,11 @@ public interface JAXRS {
         /**
          * Configuration key for the TCP port an application is bound to. A compliant
          * implementation MUST accept {@code java.lang.Integer} values. There is no
-         * default value mandated by this specification. A compliant implementation MUST
-         * use its own defaults and MAY apply (but is not obligated to) auto-selection
-         * and range-scanning algorithms.
+         * default <em>port</em> mandated by this specification, but the default
+         * <em>value</em> of this property is {@link #DEFAULT_PORT} (i. e.
+         * <code>-1</code>). A compliant implementation MUST use its own default
+         * <em>port</em> when the <em>value</em> <code>-1</code> is provided, and MAY
+         * apply (but is not obligated to) auto-selection and range-scanning algorithms.
          */
         static final String PORT = "javax.ws.rs.JAXRS.Port";
 
@@ -127,6 +130,62 @@ public interface JAXRS {
          * value is {@code "/"}.
          */
         static final String ROOT_PATH = "javax.ws.rs.JAXRS.RootPath";
+
+        /**
+         * Configuration key for the secure socket configuration to be used. The default
+         * value is {@link SSLContext#getDefault()}.
+         */
+        static final String SSL_CONTEXT = "javax.ws.rs.JAXRS.SSLContext";
+
+        /**
+         * Configuration key for the secure socket client authentication policy.
+         *
+         * <p>
+         * A compliant implementation MUST accept {@link SSLClientAuthentication} enums.
+         * The default value is {@code SSLClientAuthentication#NONE}.
+         * </p>
+         */
+        static final String SSL_CLIENT_AUTHENTICATION = "javax.ws.rs.JAXRS.SSLClientAuthentication";
+
+        /**
+         * Secure socket client authentication policy
+         *
+         * <p>
+         * This policy is used in secure socket handshake to control whether the server
+         * <em>requests</em> client authentication, and whether <em>successful</em>
+         * client authentication is mandatory (i. e. connection attempt will fail for
+         * invalid clients).
+         * </p>
+         *
+         * @author Markus KARG (markus@headcrashing.eu)
+         *
+         * @since 2.2
+         */
+        public enum SSLClientAuthentication {
+
+            /**
+             * Server will <em>not request</em> client authentication.
+             */
+            NONE,
+
+            /**
+             * Client authentication is performed, but invalid clients are
+             * <em>accepted</em>.
+             */
+            OPTIONAL,
+
+            /**
+             * Client authentication is performed, and invalid clients are
+             * <em>rejected</em>.
+             */
+            MANDATORY
+        }
+
+        /**
+         * Special value for {@link #PORT} property indicating that the implementation
+         * MUST use its default port.
+         */
+        static final int DEFAULT_PORT = -1;
 
         /**
          * Returns the value of the property with the given name, or {@code null} if
@@ -171,16 +230,16 @@ public interface JAXRS {
         }
 
         /**
-         * Convenience method to get the {@code port} to be used.
+         * Convenience method to get the actually used {@code port}.
          * <p>
          * Same as if calling {@link #property(String) property(PORT)}.
          * </p>
          * <p>
-         * If the port was not explicitly given, this will return the default port
-         * chosen by the JAX-RS implementation.
+         * If the port was <em>not explicitly</em> given, this will return the port
+         * chosen implicitly by the JAX-RS implementation.
          * </p>
          *
-         * @return port number to be used (e. g. {@code 8080}.
+         * @return port number to be used (e. g. {@code 8080}).
          * @throws ClassCastException
          *             if port is not an {@code int}.
          * @see JAXRS.Configuration#PORT
@@ -202,6 +261,38 @@ public interface JAXRS {
          */
         default String rootPath() {
             return (String) property(ROOT_PATH);
+        }
+
+        /**
+         * Convenience method to get the {@code sslContext} to be used.
+         * <p>
+         * Same as if calling {@link #property(String) property(SSL_CONTEXT)}.
+         * </p>
+         *
+         * @return root path to be used, e. g. {@code "/"}.
+         * @throws ClassCastException
+         *             if sslContext is not a {@link SSLContext}.
+         * @see JAXRS.Configuration#SSL_CONTEXT
+         */
+        default SSLContext sslContext() {
+            return (SSLContext) property(SSL_CONTEXT);
+        }
+
+        /**
+         * Convenience method to get the secure socket client authentication policy.
+         * <p>
+         * Same as if calling {@link #property(String)
+         * property(SSL_CLIENT_AUTHENTICATION)}.
+         * </p>
+         *
+         * @return client authentication mode.
+         * @throws ClassCastException
+         *             if sslClientAuthentication is not a
+         *             {@link SSLClientAuthentication}.
+         * @see JAXRS.Configuration#SSL_CLIENT_AUTHENTICATION
+         */
+        default SSLClientAuthentication sslClientAuthentication() {
+            return (SSLClientAuthentication) property(SSL_CLIENT_AUTHENTICATION);
         }
 
         /**
@@ -305,6 +396,39 @@ public interface JAXRS {
              */
             default Builder rootPath(String rootPath) {
                 return property(ROOT_PATH, rootPath);
+            }
+
+            /**
+             * Convenience method to set the {@code sslContext} to be used.
+             * <p>
+             * Same as if calling {@link #property(String, Object) property(SSL_CONTEXT,
+             * Object)}.
+             * </p>
+             *
+             * @param sslContext
+             *            sslContext parameter of this configuration, or {@code null} to use
+             *            the default value.
+             * @return the updated builder.
+             * @see JAXRS.Configuration#SSL_CONTEXT
+             */
+            default Builder sslContext(SSLContext sslContext) {
+                return property(SSL_CONTEXT, sslContext);
+            }
+
+            /**
+             * Convenience method to set SSL client authentication policy.
+             * <p>
+             * Same as if calling {@link #property(String, Object)
+             * property(SSL_CLIENT_AUTHENTICATION, Object)}.
+             * </p>
+             *
+             * @param sslClientAuthentication
+             *            SSL client authentication mode of this configuration
+             * @return the updated builder.
+             * @see JAXRS.Configuration#SSL_CLIENT_AUTHENTICATION
+             */
+            default Builder sslClientAuthentication(SSLClientAuthentication sslClientAuthentication) {
+                return property(SSL_CLIENT_AUTHENTICATION, sslClientAuthentication);
             }
         }
     }
