@@ -33,31 +33,76 @@ import javax.ws.rs.ext.RuntimeDelegate;
  * <p>
  * In a Java SE environment an application is getting started by the following
  * command using default configuration values (i. e. mounting application at
- * {@code http://localhost:8080/} or a different port (there is no default port
- * mandated by this specification):
+ * {@code http://localhost:80/} <em>or a different port</em> (there is <em>no
+ * particular default port</em> mandated by this specification). As the JAX-RS
+ * implementation is free to choose any port by default, the caller will not
+ * know the actual port unless explicitly checking the actual configuration of
+ * the instance started:
  * </p>
  *
  * <pre>
- * JAXRS.start(new MyApplication(), JAXRS.Configuration.builder().build());
- * </pre>
- * <p>
- * The following example shows how to override default values for protocol,
- * host, port and root path:
- * </p>
- *
- * <pre>
- * JAXRS.Configuration config = JAXRS.Configuration.builder().protocol("HTTP").host("0.0.0.0").port(80).rootPath("api")
- *         .build();
- * JAXRS.start(new MyApplication(), config);
+ * Application app = new MyApplication();
+ * JAXRS.Configuration config = JAXRS.Configuration.builder().build();
+ * JAXRS.start(app, config).thenAccept(instance -&gt; instance.configuration().port());
  * </pre>
  *
  * <p>
- * This more complex example shows how to start multiple applications at the
- * same time and how to stop them:
+ * Running instances can be instructed to stop serving the application:
  * </p>
  *
  * <pre>
- * TBD
+ * JAXRS.start(app, config).thenAccept(instance -&gt; { ... instance.stop(); } );
+ * </pre>
+ *
+ * <p>
+ * A shutdown callback can be registered which will get invoked once the
+ * implementation stops serving the application:
+ * </p>
+ *
+ * <pre>
+ * instance.stop().thenAccept(stopResult -&gt; ...));
+ * </pre>
+ *
+ * {@code stopResult} is not further defined but solely acts as a wrapper around
+ * a native result provided by the particular JAX-RS implementation. Portable
+ * applications should not assume any particular data type or value.
+ *
+ * <p>
+ * Protocol, host address, port and root path can be overridden explicitly. As
+ * the JAX-RS implementation is bound to that values, no querying of the actual
+ * configuration is needed in that case:
+ * </p>
+ *
+ * <pre>
+ * JAXRS.Configuration.builder().protocol("HTTPS").host("0.0.0.0").port(8443).rootPath("api").build();
+ * </pre>
+ *
+ * <p>
+ * TLS can be configured by explicitly passing a customized {@link SSLContext}:
+ * </p>
+ *
+ * <pre>
+ * SSLContext tls = SSLContext.getInstance("TLSv1.2");
+ * // ...further initialize context here (see JSSE API)...
+ * JAXRS.Configuration.builder().protocol("HTTPS").sslContext(tls).build();
+ * </pre>
+ *
+ * <p>
+ * In case of HTTPS, client authentication can be enforced to ensure that only
+ * trusted clients will connect:
+ * </p>
+ *
+ * <pre>
+ * JAXRS.Configuration.builder().protocol("HTTPS").sslClientAuthentication(SSLClientAuthentication.MANDATORY).build();
+ * </pre>
+ *
+ * <p>
+ * Implementations are free to support more use case by native properties, which
+ * effectively render the application non-portable:
+ * </p>
+ *
+ * <pre>
+ * JAXRS.Configuration.builder().property("productname.foo", "bar").build()
  * </pre>
  *
  * @author Markus KARG (markus@headcrashing.eu)
@@ -319,7 +364,8 @@ public interface JAXRS {
             /**
              * Sets the property {@code name} to the provided {@code value}.
              * <p>
-             * This method ignores unknown names and invalid values.
+             * This method does not check the validity, type or syntax of the provided
+             * value.
              * </p>
              *
              * @param name
@@ -375,7 +421,7 @@ public interface JAXRS {
              * @return the updated builder.
              * @see JAXRS.Configuration#PORT
              */
-            default Builder port(String port) {
+            default Builder port(int port) {
                 return property(PORT, port);
             }
 
