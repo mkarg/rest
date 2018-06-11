@@ -375,7 +375,7 @@ public interface JAXRS {
              * @return the updated builder.
              * @see JAXRS.Configuration#PORT
              */
-            default Builder port(String port) {
+            default Builder port(int port) {
                 return property(PORT, port);
             }
 
