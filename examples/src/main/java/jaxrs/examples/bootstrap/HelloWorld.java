@@ -1,12 +1,11 @@
 package jaxrs.examples.bootstrap;
 
-import java.util.Collections;
-import java.util.Set;
-
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Application;
+import java.util.Collections;
+import java.util.Set;
 
 @ApplicationPath("helloworld")
 @Path("hello")

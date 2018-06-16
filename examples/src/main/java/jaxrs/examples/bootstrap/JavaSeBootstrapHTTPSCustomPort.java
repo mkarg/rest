@@ -16,33 +16,34 @@
 
 package jaxrs.examples.bootstrap;
 
-import java.io.IOException;
-import java.util.concurrent.CompletionException;
-
 import javax.ws.rs.JAXRS;
 import javax.ws.rs.JAXRS.Configuration;
 import javax.ws.rs.core.Application;
+import java.io.IOException;
+import java.util.concurrent.CompletionException;
 
 /**
  * Java SE Bootstrap Example.
  *
  * @author Markus KARG (markus@headcrashing.eu)
  */
-public final class JavaSeBootstrapExample {
+public final class JavaSeBootstrapHTTPSCustomPort {
 
     /**
-     * Starts example using default properties, running on HTTPS.
+     * Starts example with custom port, running on HTTPS.
      *
-     * @param args
-     *            Command line arguments
+     * @param args Command line arguments
      */
-    public static final void main(final String[] args) {
+    public static void main(final String[] args) {
         final Application application = new HelloWorld();
-        final JAXRS.Configuration configuration = JAXRS.Configuration.builder().protocol("HTTPS").build();
+        final Configuration configuration = Configuration.builder()
+                .protocol("HTTPS")
+                .port(8443)
+                .build();
         JAXRS.start(application, configuration).thenCompose(instance -> {
             try {
                 final Configuration conf = instance.configuration();
-                System.out.printf("Instance %s running at %s://%s:%d%s [Native handle: %s].%n", instance,
+                System.out.printf("Instance %s running at %s://%s:%d/%s [Native handle: %s].%n", instance,
                         conf.protocol().toLowerCase(), conf.host(), conf.port(), conf.rootPath(),
                         instance.unwrap(Object.class));
                 System.out.println("Press any key to shutdown.");
