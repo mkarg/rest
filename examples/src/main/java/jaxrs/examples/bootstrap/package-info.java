@@ -4,7 +4,7 @@
  * Currently there only is a minimum example contained.
  * </p>
  *
- * @since 2.2
  * @see javax.ws.rs.JAXRS;
+ * @since 2.2
  */
 package jaxrs.examples.bootstrap;
