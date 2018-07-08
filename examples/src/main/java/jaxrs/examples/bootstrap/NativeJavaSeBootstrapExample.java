@@ -20,9 +20,6 @@ import javax.ws.rs.JAXRS;
 import javax.ws.rs.JAXRS.Configuration;
 import javax.ws.rs.core.Application;
 
-import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServer;
-import org.glassfish.jersey.server.ServerProperties;
-
 /**
  * Java SE Bootstrap Example demonstrating the use of native properties
  * <p>
@@ -50,12 +47,15 @@ public final class NativeJavaSeBootstrapExample {
      *            unused command line arguments
      * @throws InterruptedException
      *             when process is killed
+     * @throws ClassNotFoundException
      */
-    public static final void main(final String[] args) throws InterruptedException {
+    public static final void main(final String[] args) throws InterruptedException, ClassNotFoundException {
         final Application application = new HelloWorld();
 
         final JAXRS.Configuration requestedConfiguration = JAXRS.Configuration.builder()
-                .property(ServerProperties.HTTP_SERVER_CLASS, GrizzlyHttpServer.class).build();
+                .property("jersey.config.server.httpServerClass",
+                        Class.forName("org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServer"))
+                .build();
 
         JAXRS.start(application, requestedConfiguration).thenAccept(instance -> {
             Runtime.getRuntime()
