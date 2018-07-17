@@ -500,6 +500,31 @@ public interface JAXRS {
              */
             <T> Builder from(BiFunction<String, Class<T>, Optional<T>> propertiesProvider);
 
+            /**
+             * Optional convenience method to bulk-load external configuration.
+             * <p>
+             * Implementations are free to support any external configuration mechanics, or
+             * none at all. It is completely up to the implementation what set of properties
+             * is effectively loaded from the provided external configuration, possibly none
+             * at all.
+             * </p>
+             * <p>
+             * If the passed external configuration mechanics is unsupported, this method
+             * MUST simply do nothing.
+             * </p>
+             * <p>
+             * Portable applications should not call this method, as the outcome is
+             * completely implementation-specific.
+             * </p>
+             *
+             * @param externalConfig
+             *            source of externally managed properties
+             * @return the updated builder.
+             */
+            default Builder from(Object externalConfig) {
+                return this;
+            }
+
         }
     }
 
