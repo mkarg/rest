@@ -16,7 +16,9 @@
 
 package javax.ws.rs;
 
+import java.util.Optional;
 import java.util.concurrent.CompletionStage;
+import java.util.function.BiFunction;
 
 import javax.net.ssl.SSLContext;
 import javax.ws.rs.core.Application;
@@ -476,6 +478,28 @@ public interface JAXRS {
             default Builder sslClientAuthentication(SSLClientAuthentication sslClientAuthentication) {
                 return property(SSL_CLIENT_AUTHENTICATION, sslClientAuthentication);
             }
+
+            /**
+             * Convenience method for bulk-loading configuration from a property supplier.
+             * <p>
+             * Implementations ask the passed provider function for the actual values of all
+             * their supported properties once in a single loop, before returning from this
+             * configuration method. For each single request the implementation provides the
+             * name of the property and the expected data type of the value. If no such
+             * property exists (i. e. either the name is unknown or misspelled, or the type
+             * does not exactly match), the {@link Optional} is {@link Optional#empty()
+             * empty}.
+             * </p>
+             *
+             * @param <T>
+             *            Type of the requested property value.
+             * @param propertiesProvider
+             *            Retrieval function of externally managed properties. MUST NOT
+             *            return {@code null}.
+             * @return the updated builder.
+             */
+            <T> Builder from(BiFunction<String, Class<T>, Optional<T>> propertiesProvider);
+
         }
     }
 
