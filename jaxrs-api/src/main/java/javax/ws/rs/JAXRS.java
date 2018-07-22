@@ -229,6 +229,23 @@ public interface JAXRS {
         }
 
         /**
+         * Configuration key for CDI 2.0 SE container initializer.
+         *
+         * <p>
+         * Support for CDI is OPTIONAL.
+         * </p>
+         * <p>
+         * A compliant implementation which supports provision of pre-initialied
+         * {@code SeContainerInitializer} MUST accept that instance provided by this
+         * key.
+         * </p>
+         * <p>
+         * The default value of this property is {@code null}.
+         * </p>
+         */
+        static final String CDI_CONTAINER_INITIALIZER = "javax.ws.rs.JAXRS.CdiContainerInitializer";
+
+        /**
          * Special value for {@link #PORT} property indicating that the implementation
          * MUST use its default port.
          */
