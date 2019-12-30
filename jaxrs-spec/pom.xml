@@ -57,11 +57,12 @@
             <plugins>
                 <plugin>
                     <artifactId>maven-scm-publish-plugin</artifactId>
-                    <version>3.0.0</version>
+                    <version>3.1.0-SNAPSHOT</version>
                     <extensions>true</extensions>
                     <configuration>
                         <content>${project.build.directory}/generated-docs</content>
                         <scmBranch>gh-pages</scmBranch>
+                        <subDirectory>spec</subDirectory>
                     </configuration>
                 </plugin>
             </plugins>
