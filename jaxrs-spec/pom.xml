@@ -45,12 +45,28 @@
 
     <distributionManagement>
         <site>
-            <url>scm:git:https://github.com/eclipse-ee4j/jaxrs-api</url>
+            <id>github</id>
+            <url>scm:git:https://github.com/eclipse-ee4j/jaxrs-api.git</url>
         </site>
     </distributionManagement>
 
     <build>
         <defaultGoal>package</defaultGoal>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-scm-publish-plugin</artifactId>
+                    <version>3.0.0</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <content>${project.build.directory}/generated-docs</content>
+                        <scmBranch>gh-pages</scmBranch>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
         <plugins>
             <plugin>
                 <groupId>org.asciidoctor</groupId>
