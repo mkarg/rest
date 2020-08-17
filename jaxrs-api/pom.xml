@@ -92,9 +92,9 @@
             </properties>
         </profile>
         <profile>
-            <id>jdk11+</id>
+            <id>jdk9+</id>
             <activation>
-                <jdk>[11,)</jdk>
+                <jdk>[9,)</jdk>
             </activation>
             <build>
                 <pluginManagement>
@@ -135,55 +135,6 @@
                             <artifactId>maven-surefire-plugin</artifactId>
                             <configuration>
                                 <argLine>--add-opens jakarta.ws.rs/jakarta.ws.rs.core=java.xml.bind</argLine>
-                            </configuration>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-            </build>
-        </profile>
-        <profile>
-            <id>jdk9-jdk10</id>
-            <activation>
-                <jdk>[9,11)</jdk>
-            </activation>
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <artifactId>maven-compiler-plugin</artifactId>
-                            <version>${maven.compiler.plugin.version}</version>
-                            <executions>
-                                <execution>
-                                    <id>default-compile</id>
-                                    <configuration>
-                                        <!-- compile everything to ensure module-info contains right entries -->
-                                        <release>9</release>
-                                    </configuration>
-                                </execution>
-                                <execution>
-                                    <id>base-compile</id>
-                                    <goals>
-                                        <goal>compile</goal>
-                                    </goals>
-                                    <!-- recompile everything for target VM except the module-info.java -->
-                                    <configuration>
-                                        <excludes>
-                                            <exclude>module-info.java</exclude>
-                                        </excludes>
-                                        <source>${java.version}</source>
-                                        <target>${java.version}</target>
-                                    </configuration>
-                                </execution>
-                            </executions>
-                            <configuration>
-                                <source>${java.version}</source>
-                                <target>${java.version}</target>
-                            </configuration>
-                        </plugin>
-                        <plugin>
-                            <artifactId>maven-surefire-plugin</artifactId>
-                            <configuration>
-                                <argLine>--add-modules java.xml.bind --add-opens jakarta.ws.rs/jakarta.ws.rs.core=java.xml.bind</argLine>
                             </configuration>
                         </plugin>
                     </plugins>
