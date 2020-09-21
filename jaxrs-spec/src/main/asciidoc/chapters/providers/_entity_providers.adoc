@@ -137,9 +137,9 @@ type combinations:
 `java.io.Reader`::
   All media types (`/*`).
 `java.io.File`::
-  All media types (`/*`).
-`javax.activation.DataSource`::
-  All media types (`/*`).
+  All media types (`\*/*`).
+`jakarta.activation.DataSource`::
+  All media types (`\*/*`).
 `javax.xml.transform.Source`::
   XML types (`text/xml`, `application/xml` and media types of the form
   `application/*+xml`).
