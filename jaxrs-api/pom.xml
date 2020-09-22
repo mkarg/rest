@@ -276,7 +276,7 @@
                         <plugin>
                             <artifactId>maven-surefire-plugin</artifactId>
                             <configuration>
-                                <argLine>--add-modules java.xml.bind --add-opens jakarta.ws.rs/jakarta.ws.rs.core=java.xml.bind</argLine>
+                                <argLine>--add-modules jakarta.xml.bind</argLine>
                             </configuration>
                         </plugin>
                     </plugins>
