@@ -240,8 +240,8 @@ public abstract class RuntimeDelegate {
     /**
      * Perform startup of the application in Java SE environments.
      * <p>
-     * <em>This method is not intended to be invoked by applications. Call {@link SeBootstrap#start(Application, Configuration)}
-     * instead.</em>
+     * <em>This method is not intended to be invoked by applications. Call {@link SeBootstrap#start(Application,
+     * SeBootstrap.Configuration)} instead.</em>
      * </p>
      *
      * @param application The application to start up.
@@ -252,11 +252,25 @@ public abstract class RuntimeDelegate {
     public abstract CompletionStage<Instance> bootstrap(Application application, SeBootstrap.Configuration configuration);
 
     /**
+     * Perform startup of the application in Java SE environments.
+     * <p>
+     * <em>This method is not intended to be invoked by applications. Call {@link SeBootstrap#start(Class,
+     * SeBootstrap.Configuration)} instead.</em>
+     * </p>
+     *
+     * @param clazz The application class to instantiate and start.
+     * @param configuration The bootstrap configuration.
+     * @return {@code CompletionStage} asynchronously producing handle of the running application {@link SeBootstrap.Instance
+     * instance}.
+     */
+    public abstract CompletionStage<Instance> bootstrap(Class<? extends Application> clazz, SeBootstrap.Configuration configuration);
+
+    /**
      * Create a new instance of a {@link jakarta.ws.rs.core.EntityPart.Builder}.
      * <p>
      * <em>This method is not intended to be invoked by applications. Call {@link EntityPart#withName(String)} instead.</em>
      * </p>
-     * 
+     *
      * @param partName name for this part within the multipart body.
      * @return new {@code EntityPart.Builder} instance with specified part name
      * @throws java.lang.IllegalArgumentException if {@code partName} is {@code null}.
